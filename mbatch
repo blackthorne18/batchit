@@ -1,5 +1,4 @@
-#!/bin/bash
-
+#!/usr/local/bin/bash
 manpage="\x1B[32m-----------------------------------------\e[0m
 \x1b[37;42mbatch Manual\e[0m
 > Run an executable file in the backgroun
@@ -10,8 +9,8 @@ manpage="\x1B[32m-----------------------------------------\e[0m
 \tbatch list
 \x1B[32m-----------------------------------------\e[0m"
 
-TMPFILELOC="/pub60/prajwal/batchit/tmp"
-BASHLOC="/usr/bin/bash"
+TMPFILELOC="/Users/prajwalbharadwaj/Documents/myexecs/batchit/tmp"
+BASHLOC="/usr/local/bin/bash"
 timestamp=$(date +"%h%d_%H%M")
 nhout="nhout_${timestamp}_${RANDOM}"
 

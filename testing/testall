@@ -1,8 +1,10 @@
-#!/bin/bash
-
-echo "batch samplescript"
-batch samplescript
+#!/usr/local/bin/bash
+echo "mbatch samplescript"
+mbatch samplescript
 echo -e "\n\n"
-echo "batch samplescript with arguments"
-batch ./samplescript -p 10 trial.txt
+echo "mbatch samplescript with arguments"
+mbatch ./samplescript -p 10 trial.txt
+echo -e "\n\n"
+echo "Listing all active processes"
+mbatch list
 echo -e "\n\n"
