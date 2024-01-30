@@ -1,0 +1,74 @@
+#!/bin/bash
+
+manpage="\x1B[32m-----------------------------------------\e[0m
+\x1b[37;42mbatch Manual\e[0m
+> Run an executable file in the backgroun
+\tbatch somefile.sh
+> Pass a one line script directly to batch
+\tbatch sed -i 's/test/string/g' somefile.fna
+> List running processes
+\tbatch list
+\x1B[32m-----------------------------------------\e[0m"
+
+TMPFILELOC="/pub60/prajwal/batchit/tmp"
+BASHLOC="/usr/bin/bash"
+timestamp=$(date +"%h%d_%H%M")
+nhout="nhout_${timestamp}_${RANDOM}"
+
+if [[ "$1" == "list" ]];then
+	activeid=()
+	echo -e "\x1B[32m-----------------------------------------\e[0m"
+	echo -e "\x1B[32mActive Process  PID\t      Runtime\e[0m"
+	while IFS= read -r line
+	do
+		if [[ -z "$line" ]];then
+			continue
+		else
+			IFS=' ' read -ra ADDR <<< "$line"
+			getname="${ADDR[0]}"
+			getpid="${ADDR[1]}"
+			getruntime=$(ps -p "$getpid" -o etime=)
+			if ps -p "$getpid" > /dev/null
+			then
+				activeid+=("$line")
+				echo -e "${getname}\t${getpid}\t${getruntime}"
+				isany=1
+			else
+				if [[ -e "$TMPFILELOC/.temp_$getname" ]]; then
+					rm "$TMPFILELOC/.temp_$getname"
+				fi
+			fi
+		fi
+	done < "$TMPFILELOC/iddb"
+	if (( ${#activeid[@]} == 0 )); then
+		echo "None"
+	fi
+	printf "%s\n" "${activeid[@]}" > "$TMPFILELOC/iddb"
+	echo -e "\x1B[32m-----------------------------------------\e[0m"
+else
+	showmanpage=0
+	if [[ -z "$1" ]];then
+		showmanpage=1
+	elif [[ "$#" -ne 1 ]]; then
+		thiscommand="$@"
+		tempfile="$TMPFILELOC/.temp_$timestamp"
+		echo -e "#!$BASHLOC\n$thiscommand"> "$tempfile"
+		nohup bash "$tempfile" >& "$nhout" &
+		echo "$timestamp $!" >> $TMPFILELOC/iddb
+		# rm "$tempfile"
+	elif [[ -f "$1" && -x "$1" ]]; then
+		thiscommand="./$1"
+		nohup "$thiscommand" >& "$nhout" &
+		echo "$timestamp $!" >> $TMPFILELOC/iddb
+	else
+		showmanpage=1
+	fi
+	
+	if [[ "$showmanpage" == "1" ]];then
+		echo -e "$manpage"
+	else
+		echo -e "\x1B[96m--------------------------------------------------------\e[0m"
+		echo -e "Command\t\x1B[96m${thiscommand}\e[0m\nOutput\t\x1B[96m${nhout}\e[0m"
+		echo -e "\x1B[96m--------------------------------------------------------\e[0m"
+	fi
+fi

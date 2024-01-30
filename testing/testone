@@ -1,0 +1,4 @@
+#!/bin/bash
+
+echo "batch samplescript with arguments"
+batch ./samplescript -p 10 trial.txt

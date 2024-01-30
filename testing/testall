@@ -1,0 +1,8 @@
+#!/bin/bash
+
+echo "batch samplescript"
+batch samplescript
+echo -e "\n\n"
+echo "batch samplescript with arguments"
+batch ./samplescript -p 10 trial.txt
+echo -e "\n\n"
